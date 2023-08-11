@@ -6,6 +6,22 @@ This README is designed as a comprehensive guide to implement and enhance a simp
 
 ---
 
+## Installation
+```bash
+mkdir ~/.venv                      # Create the folder for the environment
+python3 -m venv ~/.venv/env        # Create the environment
+source ~/.venv/env/bin/activate    # Activate the environment
+
+# Update pip to the latest version
+python3 -m pip install --upgrade pip
+
+# Install the IPU specific and graphium requirements
+pip install -r requirements.txt
+
+```
+
+---
+
 ## Summary
 
 - Emphasis on iterative development: Begin modestly and escalate progressively.
