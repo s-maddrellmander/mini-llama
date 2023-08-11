@@ -4,3 +4,6 @@ pandas==2.0.3
 torch==2.0.1
 isort
 black==23.3.0
+pytest
+coverage==7.2.7
+pytest-cov==4.1.0
