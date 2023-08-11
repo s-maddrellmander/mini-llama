@@ -1,6 +1,7 @@
 # Llama Implementation Guide - Enhancing Original Work
 
 [![Python application](https://github.com/s-maddrellmander/mini-llama/actions/workflows/test.yml/badge.svg)](https://github.com/s-maddrellmander/mini-llama/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/s-maddrellmander/mini-llama/branch/main/graph/badge.svg?token=YZALQ4OB7B)](https://codecov.io/gh/s-maddrellmander/mini-llama)
 
 Based on the blog post: ["Llama from scratch (or how to implement a paper without crying)"](https://blog.briankitano.com/llama-from-scratch/). Huge props to [github.com/bkitano](https://github.com/bkitano) for the orignal implimentation, massive thanks!
 

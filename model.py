@@ -1,6 +1,9 @@
+import numpy as np
 import torch
 from torch import nn
 from torch.nn import functional as F
+
+from rope_encoding import get_rotary_matrix
 
 
 class SimpleBrokenModel(nn.Module):
@@ -103,3 +106,52 @@ class SimpleModel_RMS(nn.Module):
 
         else:
             return logits
+
+
+class RoPEAttention(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        self.w_q = nn.Linear(config["d_model"], config["d_model"], bias=False)
+        self.w_k = nn.Linear(config["d_model"], config["d_model"], bias=False)
+        self.w_v = nn.Linear(config["d_model"], config["d_model"], bias=False)
+
+        self.multihead = nn.MultiheadAttention(
+            config["d_model"], config["n_heads"], dropout=0.1, batch_first=True
+        )
+        self.R = get_rotary_matrix(config["context_window"], config["d_model"])
+
+    def get_rotary_matrix(context_window, embedding_dim):
+        R = torch.zeros(
+            (context_window, embedding_dim, embedding_dim), requires_grad=False
+        )
+        for position in range(context_window):
+            for i in range(embedding_dim // 2):
+                theta = 10000.0 ** (-2.0 * (i - 1) / embedding_dim)
+                m_theta = position * theta
+                R[position, 2 * i, 2 * i] = np.cos(m_theta)
+                R[position, 2 * i, 2 * i + 1] = -np.sin(m_theta)
+                R[position, 2 * i + 1, 2 * i] = np.sin(m_theta)
+                R[position, 2 * i + 1, 2 * i + 1] = np.cos(m_theta)
+        return R
+
+    def forward(self, x, return_attn_weights=False):
+        b, m, d = x.shape
+
+        q = self.w_q(x)
+        k = self.w_k(x)
+        v = self.w_v(x)
+
+        q_out = (torch.bmm(q.transpose(0, 1), self.R)).transpose(0, 1)
+        k_out = (torch.bmm(k.transpose(0, 1), self.R)).transpose(0, 1)
+        v_out = (torch.bmm(v.transpose(0, 1), self.R)).transpose(0, 1)
+
+        activations, attn_weights = self.multihead(
+            q_out,
+            k_out,
+            v_out,
+        )
+
+        if return_attn_weights:
+            return activations, attn_weights
+        return activations

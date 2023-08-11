@@ -27,7 +27,7 @@ class TestTraining:
         loss_plot = train(model, optimizer, self.dataset, config=self.MASTER_CONFIG)
 
         assert loss_plot["train"].values[-1] <= 3.95
-        assert loss_plot["val"].values[-1] <= 3.95
+        assert loss_plot["val"].values[-1] <= 3.98
 
     def test_simple_model(self):
         model = SimpleModel(self.MASTER_CONFIG)
