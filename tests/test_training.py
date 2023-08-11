@@ -133,6 +133,7 @@ class TestTraining:
         MASTER_CONFIG = deepcopy(self.MASTER_CONFIG)
         MASTER_CONFIG.update(
             {
+                "n_layers": 4
                 "epochs": epochs,
                 "log_interval": 10,  # Keeping this constant, you can parameterize it too if needed.
             }
