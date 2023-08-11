@@ -3,10 +3,16 @@ from copy import deepcopy
 import pytest
 import torch
 
-from model import RopeModel, SimpleBrokenModel, SimpleModel, SimpleModel_RMS, RopeModelSwish
+from llama import Llama
+from model import (
+    RopeModel,
+    RopeModelSwish,
+    SimpleBrokenModel,
+    SimpleModel,
+    SimpleModel_RMS,
+)
 from train import train
 from utils import get_batches, get_dataset
-from llama import Llama
 
 
 class TestTraining:
@@ -91,7 +97,7 @@ class TestTraining:
 
         assert loss_plot["train"].values[-1] <= 1.95
         assert loss_plot["val"].values[-1] <= 2.0
-    
+
     def test_rope_model_swish(self):
         MASTER_CONFIG = deepcopy(self.MASTER_CONFIG)
         MASTER_CONFIG.update(
@@ -114,12 +120,15 @@ class TestTraining:
 
         assert loss_plot["train"].values[-1] <= 1.88
         assert loss_plot["val"].values[-1] <= 2.0
-        
-    @pytest.mark.parametrize("epochs,train_loss,val_loss", [
-        (5000, 1.65, 1.8),
-        (10000, 0.95, 1.0),
-        # ... add more sets of parameters as needed
-    ])
+
+    @pytest.mark.parametrize(
+        "epochs,train_loss,val_loss",
+        [
+            (5000, 1.65, 1.8),
+            (10000, 0.95, 1.0),
+            # ... add more sets of parameters as needed
+        ],
+    )
     def test_llama(self, epochs, train_loss, val_loss):
         MASTER_CONFIG = deepcopy(self.MASTER_CONFIG)
         MASTER_CONFIG.update(

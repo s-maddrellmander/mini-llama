@@ -7,18 +7,18 @@ from matplotlib import pyplot as plt
 from torch import nn
 from torch.nn import functional as F
 
+from llama import Llama, LlamaBlock
 from model import (
     RoPEAttention,
     RoPEAttention_wMask,
+    RopeModel,
+    RopeModelSwish,
     SimpleBrokenModel,
     SimpleModel,
     SimpleModel_RMS,
-    RopeModel,
-    RopeModelSwish
 )
 from train import train
 from utils import get_batches, get_dataset
-from llama import LlamaBlock, Llama
 
 # print(lines[:30])
 
@@ -144,13 +144,17 @@ plt.imshow(attn_weights[0].detach().numpy())
 plt.colorbar()
 plt.show()
 # ---------------------------------
-MASTER_CONFIG.update({
-    "epochs": 5000,
-    "log_interval": 10,
-    'n_heads': 8,
-})
+MASTER_CONFIG.update(
+    {
+        "epochs": 5000,
+        "log_interval": 10,
+        "n_heads": 8,
+    }
+)
 model = RopeModelSwish(MASTER_CONFIG)
-xs, ys = get_batches(dataset, 'train', MASTER_CONFIG['batch_size'], MASTER_CONFIG['context_window'])
+xs, ys = get_batches(
+    dataset, "train", MASTER_CONFIG["batch_size"], MASTER_CONFIG["context_window"]
+)
 
 logits, loss = model(xs, ys)
 optimizer = torch.optim.Adam(model.parameters())
@@ -159,9 +163,11 @@ loss_plot.plot()
 plt.show()
 
 # ------------------------------------
-MASTER_CONFIG.update({
-    'n_layers': 4,
-})
+MASTER_CONFIG.update(
+    {
+        "n_layers": 4,
+    }
+)
 llama = Llama(MASTER_CONFIG)
 optimizer = torch.optim.Adam(llama.parameters())
 train(llama, optimizer, config=MASTER_CONFIG)
