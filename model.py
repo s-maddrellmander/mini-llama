@@ -58,3 +58,18 @@ class SimpleModel(nn.Module):
 
         else:
             return logits
+
+
+class RMSNorm(nn.Module):
+    def __init__(self, layer_shape, eps=1e-8, bias=False):
+        super(RMSNorm, self).__init__()
+        self.register_parameter("scale", nn.Parameter(torch.ones(layer_shape)))
+
+    def forward(self, x):
+        """
+        assumes shape is (batch, seq_len, d_model)
+        """
+        # frob norm is not the same as RMS. RMS = 1/sqrt(N) * frob norm
+        ff_rms = torch.linalg.norm(x, dim=(1,2)) * x[0].numel() ** -.5
+        raw = x / ff_rms.unsqueeze(-1).unsqueeze(-1)
+        return self.scale[:x.shape[1], :].unsqueeze(0) * raw
