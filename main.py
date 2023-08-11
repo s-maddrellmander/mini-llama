@@ -18,6 +18,7 @@ from model import (
 )
 from train import train
 from utils import get_batches, get_dataset
+from llama import LlamaBlock, Llama
 
 # print(lines[:30])
 
@@ -156,3 +157,11 @@ optimizer = torch.optim.Adam(model.parameters())
 loss_plot = train(model, optimizer, dataset, config=MASTER_CONFIG)
 loss_plot.plot()
 plt.show()
+
+# ------------------------------------
+MASTER_CONFIG.update({
+    'n_layers': 4,
+})
+llama = Llama(MASTER_CONFIG)
+optimizer = torch.optim.Adam(llama.parameters())
+train(llama, optimizer, config=MASTER_CONFIG)

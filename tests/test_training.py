@@ -6,6 +6,7 @@ import torch
 from model import RopeModel, SimpleBrokenModel, SimpleModel, SimpleModel_RMS, RopeModelSwish
 from train import train
 from utils import get_batches, get_dataset
+from llama import Llama
 
 
 class TestTraining:
@@ -113,3 +114,22 @@ class TestTraining:
 
         assert loss_plot["train"].values[-1] <= 1.88
         assert loss_plot["val"].values[-1] <= 2.0
+        
+    @pytest.mark.parametrize("epochs,train_loss,val_loss", [
+        (5000, 1.65, 1.8),
+        (10000, 0.95, 1.0),
+        # ... add more sets of parameters as needed
+    ])
+    def test_llama(self, epochs, train_loss, val_loss):
+        MASTER_CONFIG = deepcopy(self.MASTER_CONFIG)
+        MASTER_CONFIG.update(
+            {
+                "epochs": epochs,
+                "log_interval": 10,  # Keeping this constant, you can parameterize it too if needed.
+            }
+        )
+        llama = Llama(MASTER_CONFIG)
+        optimizer = torch.optim.Adam(llama.parameters())
+        loss_plot = train(llama, optimizer, self.dataset, config=MASTER_CONFIG)
+        assert loss_plot["train"].values[-1] <= train_loss
+        assert loss_plot["val"].values[-1] <= val_loss
