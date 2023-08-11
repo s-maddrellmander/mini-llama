@@ -1,5 +1,7 @@
 # Llama Implementation Guide - Enhancing Original Work
 
+[![Python application](https://github.com/s-maddrellmander/mini-llama/actions/workflows/test.yml/badge.svg)](https://github.com/s-maddrellmander/mini-llama/actions/workflows/test.yml)
+
 Based on the blog post: ["Llama from scratch (or how to implement a paper without crying)"](https://blog.briankitano.com/llama-from-scratch/). Huge props to [github.com/bkitano](https://github.com/bkitano) for the orignal implimentation, massive thanks!
 
 This README is designed as a comprehensive guide to implement and enhance a simplified version of Llama, initially developed for the TinyShakespeare dataset. While it takes inspiration from Karpathy's Makemore series, the prime focus is to provide clarity on building upon the original author's work.
