@@ -7,7 +7,15 @@ from matplotlib import pyplot as plt
 from torch import nn
 from torch.nn import functional as F
 
-from model import RoPEAttention, SimpleBrokenModel, SimpleModel, SimpleModel_RMS
+from model import (
+    RoPEAttention,
+    RoPEAttention_wMask,
+    SimpleBrokenModel,
+    SimpleModel,
+    SimpleModel_RMS,
+    RopeModel,
+    RopeModelSwish
+)
 from train import train
 from utils import get_batches, get_dataset
 
@@ -119,4 +127,32 @@ output, attn_weights = layer(batch, return_attn_weights=True)
 
 plt.imshow(attn_weights[0].detach().numpy(), interpolation="nearest")
 plt.colorbar()
+plt.show()
+
+layer = RoPEAttention_wMask(MASTER_CONFIG)
+batch = torch.ones(
+    (
+        MASTER_CONFIG["batch_size"],
+        MASTER_CONFIG["context_window"],
+        MASTER_CONFIG["d_model"],
+    )
+)
+output, attn_weights = layer(batch, return_attn_weights=True)
+
+plt.imshow(attn_weights[0].detach().numpy())
+plt.colorbar()
+plt.show()
+# ---------------------------------
+MASTER_CONFIG.update({
+    "epochs": 5000,
+    "log_interval": 10,
+    'n_heads': 8,
+})
+model = RopeModelSwish(MASTER_CONFIG)
+xs, ys = get_batches(dataset, 'train', MASTER_CONFIG['batch_size'], MASTER_CONFIG['context_window'])
+
+logits, loss = model(xs, ys)
+optimizer = torch.optim.Adam(model.parameters())
+loss_plot = train(model, optimizer, dataset, config=MASTER_CONFIG)
+loss_plot.plot()
 plt.show()
