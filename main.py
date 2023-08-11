@@ -20,14 +20,9 @@ from model import (
 from train import train
 from utils import get_batches, get_dataset
 
-# print(lines[:30])
-
 
 dataset, vocab = get_dataset()
 
-
-# print("vocab size:", len(vocab))
-# decode(encode("hello"))
 
 MASTER_CONFIG = {
     "vocab_size": len(vocab),
@@ -39,9 +34,6 @@ MASTER_CONFIG.update({"batch_size": 32, "context_window": 16})
 xs, ys = get_batches(
     dataset, "train", MASTER_CONFIG["batch_size"], MASTER_CONFIG["context_window"]
 )
-
-# print([(decode(xs[i].tolist()), decode(ys[i].tolist())) for i in range(len(xs))])
-
 
 MASTER_CONFIG.update(
     {

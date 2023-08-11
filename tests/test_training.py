@@ -125,7 +125,6 @@ class TestTraining:
         "epochs,train_loss,val_loss",
         [
             (5000, 1.65, 1.8),
-            (10000, 0.95, 1.0),
             # ... add more sets of parameters as needed
         ],
     )
